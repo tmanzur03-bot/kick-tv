@@ -3,31 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kick TV Pro - Android TV Edition</title>
+  <title>Kick - Titan OS Browser Edition</title>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background-color: #090b0f;
+      background-color: #0b0d12;
       color: #f1f5f9;
-      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
       overflow: hidden;
       height: 100vh;
       display: flex;
       user-select: none;
     }
 
-    /* Barra lateral expandible estilo Google TV / Android TV */
+    /* Barra lateral */
     .sidebar {
-      width: 84px;
-      background: linear-gradient(180deg, #0f1219 0%, #090b0f 100%);
+      width: 90px;
+      background: linear-gradient(180deg, #11141c 0%, #0b0d12 100%);
       border-right: 1px solid rgba(255, 255, 255, 0.06);
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 28px 0;
-      gap: 20px;
-      z-index: 30;
+      padding: 32px 0;
+      gap: 28px;
+      z-index: 10;
     }
     .brand-icon {
       width: 46px;
@@ -40,33 +40,22 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       box-shadow: 0 4px 20px rgba(83, 252, 24, 0.25);
     }
     .nav-item {
-      width: 50px;
-      height: 50px;
+      width: 52px;
+      height: 52px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #64748b;
-      border: 2px solid transparent;
-      transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+      color: #94a3b8;
+      cursor: pointer;
     }
-    .nav-item svg { width: 23px; height: 23px; fill: currentColor; }
-    .nav-item.active {
-      color: #53fc18;
-      background: rgba(83, 252, 24, 0.1);
-    }
-    .nav-item.focused {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.16);
-      border-color: #fff;
-      transform: scale(1.12);
-    }
+    .nav-item svg { width: 24px; height: 24px; fill: currentColor; }
 
-    /* Contenedor principal */
+    /* Área principal */
     .main-content {
       flex: 1;
       display: flex;
@@ -77,42 +66,41 @@
 
     /* Hero Banner superior */
     .hero {
-      height: 41%;
-      padding: 32px 52px;
+      height: 44%;
+      padding: 36px 56px;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
       position: relative;
-      background: radial-gradient(circle at 82% 20%, rgba(83, 252, 24, 0.11), transparent 55%),
-                  linear-gradient(180deg, #121621 0%, #090b0f 100%);
+      background: radial-gradient(circle at 80% 20%, rgba(83, 252, 24, 0.12), transparent 60%),
+                  linear-gradient(180deg, #131722 0%, #0b0d12 100%);
     }
     .hero-bg {
       position: absolute;
       inset: 0;
       background-size: cover;
       background-position: center;
-      opacity: 0.3;
-      mask-image: linear-gradient(to left, rgba(0,0,0,1) 18%, rgba(0,0,0,0) 82%);
-      -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,1) 18%, rgba(0,0,0,0) 82%);
-      transition: opacity 0.3s ease;
+      opacity: 0.28;
+      mask-image: linear-gradient(to left, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 85%);
+      -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 85%);
       pointer-events: none;
     }
     .hero-badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      font-size: 13px;
-      font-weight: 800;
+      font-size: 14px;
+      font-weight: 700;
       letter-spacing: 1.2px;
       text-transform: uppercase;
       color: #94a3b8;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       z-index: 2;
     }
     .hero-badge.live { color: #53fc18; }
     .dot {
-      width: 8px;
-      height: 8px;
+      width: 9px;
+      height: 9px;
       border-radius: 50%;
       background: #64748b;
     }
@@ -121,33 +109,32 @@
       box-shadow: 0 0 10px #53fc18;
     }
     .hero-title {
-      font-size: 40px;
+      font-size: 42px;
       font-weight: 700;
-      letter-spacing: -0.5px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       z-index: 2;
-      max-width: 62%;
+      max-width: 65%;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
     .hero-sub {
-      font-size: 19px;
+      font-size: 20px;
       color: #cbd5e1;
       z-index: 2;
-      max-width: 58%;
+      max-width: 60%;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    /* Buscador + Autocompletado */
+    /* Buscador + Desplegable */
     .search-wrapper {
       position: absolute;
-      top: 24px;
-      right: 52px;
+      top: 28px;
+      right: 56px;
       z-index: 50;
-      width: 410px;
+      width: 420px;
     }
     .search-bar {
       display: flex;
@@ -155,36 +142,30 @@
     }
     .search-bar input {
       flex: 1;
-      background: rgba(20, 24, 34, 0.94);
-      border: 2px solid rgba(255, 255, 255, 0.14);
+      background: rgba(22, 26, 36, 0.95);
+      border: 2px solid rgba(255, 255, 255, 0.18);
       border-radius: 999px;
-      padding: 11px 20px;
+      padding: 12px 22px;
       color: #fff;
-      font-size: 17px;
+      font-size: 18px;
       outline: none;
-      transition: border-color 0.18s, background 0.18s, transform 0.18s;
     }
     .search-bar button {
-      background: rgba(255, 255, 255, 0.12);
+      background: #53fc18;
       border: 2px solid transparent;
       border-radius: 999px;
-      padding: 11px 22px;
-      color: #fff;
-      font-size: 17px;
-      font-weight: 600;
+      padding: 12px 24px;
+      color: #000;
+      font-size: 18px;
+      font-weight: 800;
       outline: none;
-      transition: border-color 0.18s, background 0.18s, transform 0.18s;
-    }
-    .search-bar input.focused, .search-bar button.focused {
-      border-color: #ffffff !important;
-      background: rgba(255, 255, 255, 0.22);
-      transform: scale(1.03);
+      cursor: pointer;
     }
 
     .suggestions-box {
-      margin-top: 8px;
-      background: #151924;
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      margin-top: 10px;
+      background: #181d29;
+      border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 16px;
       overflow: hidden;
       box-shadow: 0 20px 45px rgba(0, 0, 0, 0.9);
@@ -194,19 +175,20 @@
     .suggestion-item {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 11px 16px;
+      gap: 14px;
+      padding: 12px 18px;
       border-left: 4px solid transparent;
+      cursor: pointer;
     }
-    .suggestion-item.focused {
-      background: #232b3d;
-      border-left-color: #53fc18;
+    .suggestion-item:hover, .suggestion-item.focused {
+      background: #262e40 !important;
+      border-left-color: #53fc18 !important;
     }
     .sug-avatar {
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
-      background: #283044;
+      background: #2b3447;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -218,7 +200,7 @@
     .sug-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .sug-info { flex: 1; overflow: hidden; }
     .sug-name {
-      font-size: 16px;
+      font-size: 17px;
       font-weight: 700;
       color: #fff;
       display: flex;
@@ -234,7 +216,7 @@
       font-weight: 800;
     }
     .sug-sub {
-      font-size: 12px;
+      font-size: 13px;
       color: #94a3b8;
       white-space: nowrap;
       overflow: hidden;
@@ -244,46 +226,44 @@
     /* Grilla de tarjetas */
     .rows-container {
       flex: 1;
-      padding: 12px 52px 32px 52px;
+      padding: 16px 56px 40px 56px;
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
-    .row-header {
+    .row-title {
+      font-size: 22px;
+      font-weight: 500;
+      color: #e2e8f0;
+      margin-bottom: 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
-    }
-    .row-title {
-      font-size: 21px;
-      font-weight: 600;
-      color: #e2e8f0;
     }
     #status-msg {
-      font-size: 15px;
+      font-size: 16px;
       color: #94a3b8;
+      font-weight: 400;
     }
     .cards-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 22px;
+      gap: 26px;
     }
     .tv-card {
-      background: #141822;
+      background: #161a24;
       border-radius: 16px;
       overflow: hidden;
       border: 3px solid transparent;
-      transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
-                  border-color 0.2s,
-                  box-shadow 0.2s;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
       display: flex;
       flex-direction: column;
-      will-change: transform;
+      cursor: pointer;
     }
     .card-thumb {
-      height: 128px;
-      background: #1c2230;
+      height: 135px;
+      background: #1e2433;
       background-size: cover;
       background-position: center;
       position: relative;
@@ -292,15 +272,15 @@
       justify-content: center;
     }
     .card-avatar {
-      width: 60px;
-      height: 60px;
+      width: 64px;
+      height: 64px;
       border-radius: 50%;
-      background: #262e40;
+      background: #272f42;
       border: 2px solid rgba(255,255,255,0.15);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
+      font-size: 26px;
       font-weight: 800;
       color: #53fc18;
       text-transform: uppercase;
@@ -309,44 +289,50 @@
     .card-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .live-pill {
       position: absolute;
-      top: 10px;
-      left: 10px;
+      top: 12px;
+      left: 12px;
       background: #e11d48;
       color: #fff;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 800;
-      padding: 3px 9px;
+      padding: 4px 10px;
       border-radius: 6px;
       letter-spacing: 0.8px;
       display: none;
     }
     .tv-card.is-live .live-pill { display: block; }
     .card-info {
-      padding: 12px 16px;
-      background: #141822;
+      padding: 14px 18px;
+      background: #161a24;
     }
     .card-name {
-      font-size: 19px;
+      font-size: 20px;
       font-weight: 700;
       color: #f8fafc;
-      margin-bottom: 3px;
+      margin-bottom: 4px;
     }
     .card-meta {
-      font-size: 13px;
+      font-size: 14px;
       color: #94a3b8;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    .tv-card.focused {
+    /* Foco por flechas O por puntero */
+    .tv-card:hover, .tv-card.focused {
       transform: scale(1.05);
       border-color: #ffffff !important;
-      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.8), 0 0 0 2px rgba(255, 255, 255, 0.25);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.75), 0 0 0 2px rgba(255, 255, 255, 0.3);
       z-index: 20;
     }
+    .search-bar input:hover, .search-bar input.focused,
+    .search-bar button:hover, .search-bar button.focused {
+      border-color: #ffffff !important;
+      transform: scale(1.03);
+    }
 
-    /* Reproductor pantalla completa optimizado */
+    /* Reproductor pantalla completa con botón táctil/puntero */
     #player-container {
       position: fixed;
       inset: 0;
@@ -357,56 +343,45 @@
     video { width: 100%; height: 100%; object-fit: contain; }
     #player-overlay {
       position: absolute;
-      bottom: 40px;
-      left: 50px;
-      right: 50px;
-      background: linear-gradient(90deg, rgba(9,11,15,0.94) 0%, rgba(9,11,15,0.72) 100%);
-      padding: 18px 26px;
+      bottom: 45px;
+      left: 55px;
+      right: 55px;
+      background: linear-gradient(90deg, rgba(11,13,18,0.94) 0%, rgba(11,13,18,0.75) 100%);
+      padding: 20px 28px;
       border-radius: 16px;
       border-left: 5px solid #53fc18;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      transition: opacity 0.35s ease;
+      transition: opacity 0.4s ease;
     }
-    .overlay-left { display: flex; flex-direction: column; gap: 4px; max-width: 70%; }
-    .overlay-title { font-size: 22px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .overlay-sub { font-size: 15px; color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .overlay-controls { display: flex; align-items: center; gap: 14px; }
-    .quality-badge {
-      background: rgba(83, 252, 24, 0.16);
-      border: 1px solid #53fc18;
-      color: #53fc18;
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 700;
+    .overlay-title { font-size: 24px; font-weight: 700; }
+    #back-to-menu-btn {
+      background: #e11d48;
+      color: #fff;
+      border: 2px solid #fff;
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
     }
-    .overlay-hint { font-size: 14px; color: #94a3b8; text-align: right; }
   </style>
 </head>
 <body>
 
-  <!-- Barra lateral funcional -->
   <aside class="sidebar">
     <div class="brand-icon">K</div>
-    <div class="nav-item active" id="nav-home" title="Todos tus canales">
-      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-    </div>
-    <div class="nav-item" id="nav-live" title="Solo En Vivo">
-      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
-    </div>
-    <div class="nav-item" id="nav-refresh" title="Actualizar canales">
+    <div class="nav-item" id="refresh-btn" title="Actualizar estado">
       <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
     </div>
   </aside>
 
-  <!-- Contenido principal -->
   <main class="main-content">
     <div class="search-wrapper">
       <div class="search-bar">
-        <input type="text" id="channel-input" placeholder="Buscar canal (ej: spr)..." autocomplete="off" />
-        <button id="play-btn">Ver</button>
+        <input type="text" id="channel-input" class="focusable" placeholder="Buscar (ej: spr)..." autocomplete="off" />
+        <button id="play-btn" class="focusable">Ver</button>
       </div>
       <div class="suggestions-box" id="suggestions-box"></div>
     </div>
@@ -415,59 +390,66 @@
       <div class="hero-bg" id="hero-bg"></div>
       <div class="hero-badge" id="hero-badge"><span class="dot"></span><span id="hero-status">KICK TV</span></div>
       <div class="hero-title" id="hero-title">Seleccioná un canal</div>
-      <div class="hero-sub" id="hero-sub">Navegá con las flechas y presioná OK</div>
+      <div class="hero-sub" id="hero-sub">Apuntá con el control o usá las flechas y presioná OK</div>
     </section>
 
     <section class="rows-container">
-      <div class="row-header">
-        <span class="row-title" id="section-title">Canales Seguidos</span>
-        <span id="status-msg">Cargando...</span>
+      <div class="row-title">
+        <span>Canales Seguidos</span>
+        <span id="status-msg">Actualizando estado...</span>
       </div>
-      <div class="cards-row" id="channel-grid"></div>
+      <div class="cards-row" id="channel-grid">
+        <div class="tv-card focusable" data-channel="unicornio">
+          <div class="card-thumb"><span class="live-pill">EN VIVO</span><div class="card-avatar">U</div></div>
+          <div class="card-info"><div class="card-name">unicornio</div><div class="card-meta">Cargando...</div></div>
+        </div>
+        <div class="tv-card focusable" data-channel="agustinunaplay8">
+          <div class="card-thumb"><span class="live-pill">EN VIVO</span><div class="card-avatar">A</div></div>
+          <div class="card-info"><div class="card-name">agustinunaplay8</div><div class="card-meta">Cargando...</div></div>
+        </div>
+        <div class="tv-card focusable" data-channel="santutu">
+          <div class="card-thumb"><span class="live-pill">EN VIVO</span><div class="card-avatar">S</div></div>
+          <div class="card-info"><div class="card-name">santutu</div><div class="card-meta">Cargando...</div></div>
+        </div>
+        <div class="tv-card focusable" data-channel="straka">
+          <div class="card-thumb"><span class="live-pill">EN VIVO</span><div class="card-avatar">S</div></div>
+          <div class="card-info"><div class="card-name">straka</div><div class="card-meta">Cargando...</div></div>
+        </div>
+        <div class="tv-card focusable" data-channel="baldu">
+          <div class="card-thumb"><span class="live-pill">EN VIVO</span><div class="card-avatar">B</div></div>
+          <div class="card-info"><div class="card-name">baldu</div><div class="card-meta">Cargando...</div></div>
+        </div>
+        <div class="tv-card focusable" data-channel="spreen">
+          <div class="card-thumb"><span class="live-pill">EN VIVO</span><div class="card-avatar">S</div></div>
+          <div class="card-info"><div class="card-name">spreen</div><div class="card-meta">Cargando...</div></div>
+        </div>
+      </div>
     </section>
   </main>
 
-  <!-- Reproductor -->
   <div id="player-container">
     <video id="video" autoplay playsinline></video>
     <div id="player-overlay">
-      <div class="overlay-left">
-        <div class="overlay-title" id="overlay-title">Cargando stream...</div>
-        <div class="overlay-sub" id="overlay-sub">Conectando</div>
-      </div>
-      <div class="overlay-controls">
-        <div class="quality-badge" id="quality-badge">AUTO</div>
-        <div class="overlay-hint">OK: Cambiar calidad<br>ATRÁS: Salir</div>
-      </div>
+      <div class="overlay-title" id="overlay-title">Cargando stream...</div>
+      <button id="back-to-menu-btn">← Volver al menú</button>
     </div>
   </div>
 
   <script>
-    const DEFAULT_CHANNELS = [
-      'unicornio',
-      'agustinunaplay8',
-      'santutu',
-      'straka',
-      'baldu',
-      'spreen'
-    ];
-
-    let channelDataCache = {};
-    let currentFilter = 'all'; // 'all' | 'live'
+    const channelDataCache = {};
     let currentFocusEl = null;
     let isPlaying = false;
     let hls = null;
     let overlayTimeout = null;
     let searchTimeout = null;
 
-    const navItems = Array.from(document.querySelectorAll('.nav-item'));
     const inputEl = document.getElementById('channel-input');
     const playBtnEl = document.getElementById('play-btn');
+    const refreshBtnEl = document.getElementById('refresh-btn');
     const suggestionsBox = document.getElementById('suggestions-box');
-    const gridEl = document.getElementById('channel-grid');
-    const sectionTitleEl = document.getElementById('section-title');
-    const statusMsg = document.getElementById('status-msg');
+    const cards = Array.from(document.querySelectorAll('.tv-card'));
 
+    const statusMsg = document.getElementById('status-msg');
     const heroBg = document.getElementById('hero-bg');
     const heroBadge = document.getElementById('hero-badge');
     const heroStatus = document.getElementById('hero-status');
@@ -478,134 +460,32 @@
     const video = document.getElementById('video');
     const overlay = document.getElementById('player-overlay');
     const overlayTitle = document.getElementById('overlay-title');
-    const overlaySub = document.getElementById('overlay-sub');
-    const qualityBadge = document.getElementById('quality-badge');
+    const backBtn = document.getElementById('back-to-menu-btn');
 
-    // Doble respaldo de fetch para evitar bloqueos CORS/Cloudflare
-    async function fetchKickJSON(url) {
-      const endpoints = [
-        url,
-        `https://corsproxy.io/?${encodeURIComponent(url)}`,
-        `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`
-      ];
-
-      for (const endpoint of endpoints) {
-        try {
-          const controller = new AbortController();
-          const timer = setTimeout(() => controller.abort(), 5500);
-          const res = await fetch(endpoint, { signal: controller.signal });
-          clearTimeout(timer);
-          if (res.ok) {
-            return await res.json();
-          }
-        } catch (e) {
-          // Intenta el siguiente respaldo
-        }
-      }
-      throw new Error('No se pudo conectar con Kick');
-    }
-
-    function getSavedChannels() {
+    async function fetchWithProxyFallback(url) {
       try {
-        const recent = JSON.parse(localStorage.getItem('kick_recent_channels') || '[]');
-        const combined = [...DEFAULT_CHANNELS];
-        for (const r of recent) {
-          if (!combined.includes(r) && combined.length < 6) combined.push(r);
-        }
-        return combined;
-      } catch (e) {
-        return DEFAULT_CHANNELS;
-      }
-    }
-
-    function rememberChannel(slug) {
-      if (DEFAULT_CHANNELS.includes(slug)) return;
-      try {
-        let recent = JSON.parse(localStorage.getItem('kick_recent_channels') || '[]');
-        recent = [slug, ...recent.filter(item => item !== slug)].slice(0, 3);
-        localStorage.setItem('kick_recent_channels', JSON.stringify(recent));
+        const res = await fetch(url);
+        if (res.ok) return await res.json();
       } catch (e) {}
+      const proxyRes = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`);
+      if (!proxyRes.ok) throw new Error('Error de red');
+      return await proxyRes.json();
     }
 
-    function renderGrid() {
-      const channels = getSavedChannels();
-      const filtered = currentFilter === 'live'
-        ? channels.filter(slug => channelDataCache[slug] && channelDataCache[slug].livestream)
-        : channels;
+    // Eventos de puntero / clic para navegador de Titan OS
+    cards.forEach(card => {
+      card.addEventListener('mouseenter', () => setFocus(card));
+      card.addEventListener('click', () => loadChannel(card.dataset.channel));
+    });
 
-      gridEl.innerHTML = '';
+    playBtnEl.addEventListener('click', () => loadChannel(inputEl.value));
+    refreshBtnEl.addEventListener('click', () => hydrateCards());
+    backBtn.addEventListener('click', () => stopVideo());
+    playerContainer.addEventListener('mousemove', () => showOverlay(overlayTitle.textContent));
+    playerContainer.addEventListener('click', (e) => {
+      if (e.target !== backBtn) showOverlay(overlayTitle.textContent);
+    });
 
-      if (filtered.length === 0) {
-        gridEl.innerHTML = `<div style="grid-column: 1 / -1; color: #94a3b8; font-size: 18px; padding: 20px 0;">Ninguno de tus canales seguidos está en vivo en este momento.</div>`;
-        return;
-      }
-
-      filtered.forEach(slug => {
-        const data = channelDataCache[slug];
-        const isLive = !!(data && data.livestream);
-        const pic = data && data.user ? data.user.profile_pic : '';
-        const thumb = isLive && data.livestream.thumbnail ? data.livestream.thumbnail.url : '';
-        const banner = data && data.banner_image ? data.banner_image.url : '';
-
-        const card = document.createElement('div');
-        card.className = `tv-card ${isLive ? 'is-live' : ''}`;
-        card.dataset.channel = slug;
-
-        let thumbStyle = '';
-        let showAvatar = true;
-        if (thumb) {
-          thumbStyle = `background-image: url('${thumb}');`;
-          showAvatar = false;
-        } else if (banner) {
-          thumbStyle = `background-image: linear-gradient(rgba(20,24,34,0.6), rgba(20,24,34,0.85)), url('${banner}');`;
-        }
-
-        const metaText = !data
-          ? 'Actualizando...'
-          : isLive
-            ? `${(data.livestream.viewer_count || 0).toLocaleString()} espectadores • ${data.livestream.session_title || 'En vivo'}`
-            : 'Desconectado';
-
-        card.innerHTML = `
-          <div class="card-thumb" style="${thumbStyle}">
-            <span class="live-pill">EN VIVO</span>
-            ${showAvatar ? `<div class="card-avatar">${pic ? `<img src="${pic}" alt="">` : slug[0].toUpperCase()}</div>` : ''}
-          </div>
-          <div class="card-info">
-            <div class="card-name">${slug}</div>
-            <div class="card-meta">${metaText}</div>
-          </div>
-        `;
-        gridEl.appendChild(card);
-      });
-    }
-
-    // Carga todos los canales en paralelo (mucho más rápido)
-    async function hydrateAllChannels() {
-      statusMsg.textContent = 'Actualizando estado...';
-      renderGrid();
-
-      const channels = getSavedChannels();
-      await Promise.allSettled(
-        channels.map(async (slug) => {
-          try {
-            const data = await fetchKickJSON(`https://kick.com/api/v2/channels/${slug}`);
-            channelDataCache[slug] = data;
-          } catch (e) {}
-        })
-      );
-
-      renderGrid();
-      const firstCard = gridEl.querySelector('.tv-card');
-      if (firstCard && (!currentFocusEl || !document.body.contains(currentFocusEl))) {
-        setFocus(firstCard);
-      } else {
-        updateHeroFromFocus();
-      }
-      statusMsg.textContent = 'Actualizado';
-    }
-
-    // Autocompletado en vivo
     inputEl.addEventListener('input', () => {
       clearTimeout(searchTimeout);
       const query = inputEl.value.trim();
@@ -617,20 +497,22 @@
 
       searchTimeout = setTimeout(async () => {
         try {
-          const data = await fetchKickJSON(`https://kick.com/api/search?searched_word=${encodeURIComponent(query)}`);
-          renderSuggestions((data.channels || []).slice(0, 5));
+          const searchUrl = `https://kick.com/api/search?searched_word=${encodeURIComponent(query)}`;
+          const data = await fetchWithProxyFallback(searchUrl);
+          const channels = (data.channels || []).slice(0, 5);
+          renderSuggestions(channels);
         } catch (err) {
-          const local = Object.keys(channelDataCache)
-            .filter(s => s.includes(query.toLowerCase()))
-            .map(s => ({
-              slug: s,
-              user: channelDataCache[s].user,
-              is_live: !!channelDataCache[s].livestream,
-              livestream: channelDataCache[s].livestream
+          const localMatches = Object.keys(channelDataCache)
+            .filter(slug => slug.includes(query.toLowerCase()))
+            .map(slug => ({
+              slug,
+              user: channelDataCache[slug].user,
+              is_live: !!channelDataCache[slug].livestream,
+              livestream: channelDataCache[slug].livestream
             }));
-          renderSuggestions(local);
+          renderSuggestions(localMatches);
         }
-      }, 260);
+      }, 280);
     });
 
     function renderSuggestions(channels) {
@@ -661,6 +543,11 @@
             <div class="sug-sub">${title}</div>
           </div>
         `;
+        item.addEventListener('mouseenter', () => setFocus(item));
+        item.addEventListener('click', () => {
+          closeSuggestions();
+          loadChannel(slug);
+        });
         suggestionsBox.appendChild(item);
       });
 
@@ -670,6 +557,45 @@
     function closeSuggestions() {
       suggestionsBox.classList.remove('visible');
       suggestionsBox.innerHTML = '';
+    }
+
+    async function hydrateCards() {
+      statusMsg.textContent = 'Actualizando estado...';
+      for (const card of cards) {
+        const slug = card.dataset.channel;
+        try {
+          const data = await fetchWithProxyFallback(`https://kick.com/api/v2/channels/${slug}`);
+          channelDataCache[slug] = data;
+
+          const thumbEl = card.querySelector('.card-thumb');
+          const avatarEl = card.querySelector('.card-avatar');
+          const metaEl = card.querySelector('.card-meta');
+
+          if (data.user && data.user.profile_pic) {
+            avatarEl.innerHTML = `<img src="${data.user.profile_pic}" alt="${slug}">`;
+          }
+
+          if (data.livestream) {
+            card.classList.add('is-live');
+            const viewers = data.livestream.viewer_count || 0;
+            metaEl.textContent = `${viewers.toLocaleString()} espectadores • ${data.livestream.session_title || 'En vivo'}`;
+            if (data.livestream.thumbnail && data.livestream.thumbnail.url) {
+              thumbEl.style.backgroundImage = `url('${data.livestream.thumbnail.url}')`;
+              avatarEl.style.display = 'none';
+            }
+          } else {
+            card.classList.remove('is-live');
+            metaEl.textContent = 'Desconectado';
+            if (data.banner_image && data.banner_image.url) {
+              thumbEl.style.backgroundImage = `linear-gradient(rgba(22,26,36,0.65), rgba(22,26,36,0.85)), url('${data.banner_image.url}')`;
+            }
+          }
+        } catch (err) {
+          card.querySelector('.card-meta').textContent = 'Sin conexión';
+        }
+      }
+      statusMsg.textContent = 'Listo';
+      updateHeroFromFocus();
     }
 
     function updateHeroFromFocus() {
@@ -683,9 +609,9 @@
         heroBadge.classList.add('live');
         heroStatus.textContent = `EN VIVO • ${(data.livestream.viewer_count || 0).toLocaleString()} ESPECTADORES`;
         heroSub.textContent = data.livestream.session_title || 'Transmisión en directo';
-        heroBg.style.backgroundImage = (data.livestream.thumbnail && data.livestream.thumbnail.url)
-          ? `url('${data.livestream.thumbnail.url}')`
-          : 'none';
+        if (data.livestream.thumbnail && data.livestream.thumbnail.url) {
+          heroBg.style.backgroundImage = `url('${data.livestream.thumbnail.url}')`;
+        }
       } else {
         heroBadge.classList.remove('live');
         heroStatus.textContent = 'OFFLINE';
@@ -701,10 +627,6 @@
       document.querySelectorAll('.focused').forEach(node => node.classList.remove('focused'));
       currentFocusEl = el;
       currentFocusEl.classList.add('focused');
-
-      if (el === inputEl) inputEl.focus();
-      else inputEl.blur();
-
       updateHeroFromFocus();
     }
 
@@ -715,9 +637,8 @@
       closeSuggestions();
       statusMsg.textContent = `Conectando con ${cleanName}...`;
       try {
-        const data = await fetchKickJSON(`https://kick.com/api/v2/channels/${cleanName}`);
+        const data = await fetchWithProxyFallback(`https://kick.com/api/v2/channels/${cleanName}`);
         channelDataCache[cleanName] = data;
-        rememberChannel(cleanName);
 
         if (!data.livestream || !data.playback_url) {
           statusMsg.textContent = `${cleanName} no está en vivo ahora`;
@@ -727,190 +648,97 @@
 
         startVideo(data.playback_url, cleanName, data.livestream.session_title);
       } catch (err) {
-        statusMsg.textContent = `Error al cargar "${cleanName}"`;
+        statusMsg.textContent = `No se pudo cargar "${cleanName}"`;
       }
     }
 
     function startVideo(m3u8Url, channelName, title) {
       isPlaying = true;
       playerContainer.style.display = 'block';
-      qualityBadge.textContent = 'AUTO';
-      showOverlay(channelName.toUpperCase(), title || 'Transmisión en vivo');
+      showOverlay(`${channelName.toUpperCase()} — ${title || 'En vivo'}`);
 
       if (Hls.isSupported()) {
         if (hls) hls.destroy();
-        // Configuración optimizada para memoria de Smart TV y baja latencia
-        hls = new Hls({
-          maxBufferLength: 20,
-          maxMaxBufferLength: 40,
-          backBufferLength: 10,
-          enableWorker: true,
-          lowLatencyMode: true
-        });
+        hls = new Hls({ maxBufferLength: 30, maxMaxBufferLength: 60 });
         hls.loadSource(m3u8Url);
         hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+        hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(() => {}));
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
         video.src = m3u8Url;
-        video.play();
+        video.play().catch(() => {});
       }
-    }
-
-    function cycleVideoQuality() {
-      if (!hls || !hls.levels || hls.levels.length === 0) return;
-      // Cicla entre Auto (-1) y las resoluciones disponibles
-      let nextLevel = hls.currentLevel + 1;
-      if (nextLevel >= hls.levels.length) nextLevel = -1;
-      hls.currentLevel = nextLevel;
-
-      if (nextLevel === -1) {
-        qualityBadge.textContent = 'AUTO';
-      } else {
-        const height = hls.levels[nextLevel].height;
-        qualityBadge.textContent = height ? `${height}p` : `Nivel ${nextLevel + 1}`;
-      }
-      showOverlay(overlayTitle.textContent, overlaySub.textContent);
     }
 
     function stopVideo() {
       isPlaying = false;
       if (hls) { hls.destroy(); hls = null; }
       video.pause();
-      video.removeAttribute('src');
-      video.load();
+      video.src = '';
       playerContainer.style.display = 'none';
       statusMsg.textContent = 'Listo';
     }
 
-    function showOverlay(title, sub) {
-      overlayTitle.textContent = title;
-      overlaySub.textContent = sub;
+    function showOverlay(text) {
+      overlayTitle.textContent = text;
       overlay.style.opacity = '1';
       clearTimeout(overlayTimeout);
-      overlayTimeout = setTimeout(() => { overlay.style.opacity = '0'; }, 4500);
+      overlayTimeout = setTimeout(() => { overlay.style.opacity = '0'; }, 5000);
     }
 
-    function switchNav(navId) {
-      navItems.forEach(n => n.classList.remove('active'));
-      if (navId === 'nav-home') {
-        document.getElementById('nav-home').classList.add('active');
-        currentFilter = 'all';
-        sectionTitleEl.textContent = 'Canales Seguidos';
-        renderGrid();
-      } else if (navId === 'nav-live') {
-        document.getElementById('nav-live').classList.add('active');
-        currentFilter = 'live';
-        sectionTitleEl.textContent = 'En Vivo Ahora';
-        renderGrid();
-      } else if (navId === 'nav-refresh') {
-        document.getElementById(currentFilter === 'live' ? 'nav-live' : 'nav-home').classList.add('active');
-        hydrateAllChannels();
-      }
-    }
-
-    // Control remoto D-Pad
+    // Mantiene compatibilidad con flechas si el navegador las envía
     document.addEventListener('keydown', (e) => {
       if (isPlaying) {
         if (e.key === 'Backspace' || e.key === 'Escape' || e.keyCode === 461 || e.keyCode === 10009) {
           e.preventDefault();
           stopVideo();
-        } else if (e.key === 'Enter') {
-          e.preventDefault();
-          cycleVideoQuality();
         } else {
-          showOverlay(overlayTitle.textContent, overlaySub.textContent);
+          showOverlay(overlayTitle.textContent);
         }
         return;
       }
 
-      const cards = Array.from(gridEl.querySelectorAll('.tv-card'));
       const sugItems = Array.from(suggestionsBox.querySelectorAll('.suggestion-item'));
       const isSugOpen = suggestionsBox.classList.contains('visible') && sugItems.length > 0;
-
-      const navIndex = navItems.indexOf(currentFocusEl);
       const sugIndex = sugItems.indexOf(currentFocusEl);
       const cardIndex = cards.indexOf(currentFocusEl);
 
       switch (e.key) {
         case 'ArrowDown':
-          if (navIndex !== -1 && navIndex + 1 < navItems.length) {
-            setFocus(navItems[navIndex + 1]);
-          } else if (currentFocusEl === inputEl || currentFocusEl === playBtnEl) {
+          if (currentFocusEl === inputEl || currentFocusEl === playBtnEl) {
             if (isSugOpen) { e.preventDefault(); setFocus(sugItems[0]); }
-            else if (cards.length > 0) setFocus(cards[0]);
+            else setFocus(cards[0]);
           } else if (sugIndex !== -1) {
             e.preventDefault();
             if (sugIndex + 1 < sugItems.length) setFocus(sugItems[sugIndex + 1]);
-            else { closeSuggestions(); if (cards.length > 0) setFocus(cards[0]); }
+            else { closeSuggestions(); setFocus(cards[0]); }
           } else if (cardIndex !== -1 && cardIndex + 3 < cards.length) {
             setFocus(cards[cardIndex + 3]);
           }
           break;
-
         case 'ArrowUp':
-          if (navIndex > 0) {
-            setFocus(navItems[navIndex - 1]);
-          } else if (sugIndex > 0) {
-            e.preventDefault();
-            setFocus(sugItems[sugIndex - 1]);
-          } else if (sugIndex === 0) {
-            e.preventDefault();
-            setFocus(inputEl);
-          } else if (cardIndex >= 3) {
-            setFocus(cards[cardIndex - 3]);
-          } else if (cardIndex >= 0 && cardIndex < 3) {
-            setFocus(inputEl);
-          }
+          if (sugIndex > 0) { e.preventDefault(); setFocus(sugItems[sugIndex - 1]); }
+          else if (sugIndex === 0) { e.preventDefault(); setFocus(inputEl); }
+          else if (cardIndex >= 3) setFocus(cards[cardIndex - 3]);
+          else if (cardIndex >= 0 && cardIndex < 3) setFocus(inputEl);
           break;
-
         case 'ArrowRight':
-          if (navIndex !== -1) {
-            if (cards.length > 0) setFocus(cards[0]);
-            else setFocus(inputEl);
-          } else if (currentFocusEl === inputEl) {
-            setFocus(playBtnEl);
-          } else if (cardIndex !== -1 && cardIndex + 1 < cards.length) {
-            setFocus(cards[cardIndex + 1]);
-          }
+          if (currentFocusEl === inputEl) setFocus(playBtnEl);
+          else if (cardIndex !== -1 && cardIndex + 1 < cards.length) setFocus(cards[cardIndex + 1]);
           break;
-
         case 'ArrowLeft':
-          if (currentFocusEl === playBtnEl) {
-            setFocus(inputEl);
-          } else if (currentFocusEl === inputEl) {
-            setFocus(navItems[0]);
-          } else if (cardIndex !== -1) {
-            if (cardIndex % 3 === 0) setFocus(navItems[0]);
-            else setFocus(cards[cardIndex - 1]);
-          }
+          if (currentFocusEl === playBtnEl) setFocus(inputEl);
+          else if (cardIndex > 0) setFocus(cards[cardIndex - 1]);
           break;
-
-        case 'Escape':
-        case 'Backspace':
-          if (isSugOpen && currentFocusEl !== inputEl) {
-            e.preventDefault();
-            closeSuggestions();
-            setFocus(inputEl);
-          }
-          break;
-
         case 'Enter':
-          if (navIndex !== -1) {
-            switchNav(currentFocusEl.id);
-          } else if (currentFocusEl === playBtnEl) {
-            loadChannel(inputEl.value);
-          } else if (sugIndex !== -1) {
-            const chosen = currentFocusEl.dataset.channel;
-            inputEl.value = chosen;
-            loadChannel(chosen);
-          } else if (cardIndex !== -1) {
-            loadChannel(currentFocusEl.dataset.channel);
-          }
+          if (currentFocusEl === playBtnEl) loadChannel(inputEl.value);
+          else if (sugIndex !== -1) loadChannel(currentFocusEl.dataset.channel);
+          else if (cardIndex !== -1) loadChannel(currentFocusEl.dataset.channel);
           break;
       }
     });
 
-    hydrateAllChannels();
+    setFocus(cards[0]);
+    hydrateCards();
   </script>
 </body>
 </html>
