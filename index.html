@@ -213,9 +213,8 @@
     // Tus canales (máximo recomendado: 6 para que entren en pantalla)
     const CHANNELS = ['unicornio', 'agustinunaplay8', 'santutu', 'straka', 'baldu', 'spreen'];
 
-    // OPCIONAL pero MUY recomendado: URL de tu Cloudflare Worker (ver instrucciones).
-    // Ejemplo: 'https://kick-proxy.tuusuario.workers.dev'
-    const WORKER_URL = '';
+    // Tu Worker de Cloudflare ya configurado:
+    const WORKER_URL = 'https://kick-tv.tmanzur03.workers.dev';
     // ===================================================
 
     const PROXIES = [
@@ -268,7 +267,6 @@
       return fetch(url, ctrl ? { signal: ctrl.signal } : {}).finally(() => clearTimeout(timer));
     }
 
-    // Prueba primero el proxy que funcionó la última vez, después el resto
     async function fetchJSON(url) {
       const order = [preferredProxy, ...PROXIES.map((_, i) => i).filter(i => i !== preferredProxy)];
       for (const i of order) {
@@ -338,7 +336,6 @@
 
     async function hydrateCards() {
       statusMsg.textContent = 'Actualizando estado...';
-      // Primero una sola tarjeta para detectar qué proxy funciona, después el resto en paralelo
       await hydrateCard(cards[0]);
       await Promise.all(cards.slice(1).map(hydrateCard));
       const ok = cards.some(c => channelDataCache[c.dataset.channel]);
@@ -368,8 +365,7 @@
             slug, user: channelDataCache[slug].user, livestream: channelDataCache[slug].livestream
           }));
         }
-        if (token !== searchToken) return; // llegó una búsqueda más nueva
-        // Siempre ofrecer abrir el texto escrito tal cual
+        if (token !== searchToken) return;
         if (!results.some(r => (r.slug || '').toLowerCase() === query)) {
           results.push({ slug: query, _manual: true });
         }
@@ -504,7 +500,17 @@
 
       if (window.Hls && Hls.isSupported()) {
         if (hls) hls.destroy();
-        hls = new Hls({ maxBufferLength: 30, maxMaxBufferLength: 60, liveSyncDurationCount: 3, enableWorker: true });
+        hls = new Hls({
+          maxBufferLength: 30,
+          maxMaxBufferLength: 60,
+          liveSyncDurationCount: 3,
+          enableWorker: true,
+          xhrSetup: function(xhr, url) {
+            if (WORKER_URL && url.includes('.m3u8') && !url.startsWith(WORKER_URL)) {
+              xhr.open('GET', `${WORKER_URL}/?url=${encodeURIComponent(url)}`, true);
+            }
+          }
+        });
         hls.loadSource(m3u8Url);
         hls.attachMedia(video);
         hls.on(Hls.Events.MANIFEST_PARSED, () => { log('Manifest OK'); tryPlay(); });
@@ -628,7 +634,7 @@
           }
           break;
         case 'ArrowLeft':
-          if (currentFocusEl === inputEl) break; // mover cursor dentro del texto
+          if (currentFocusEl === inputEl) break;
           e.preventDefault();
           if (currentFocusEl === playBtnEl) setFocus(inputEl);
           else if (cardIndex !== -1 && cardIndex % 3 === 0) setFocus(refreshBtnEl);
