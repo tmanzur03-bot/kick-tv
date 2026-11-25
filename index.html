@@ -3,369 +3,160 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kick - Titan OS Browser Edition</title>
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <title>Kick TV - Titan OS</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background-color: #0b0d12;
-      color: #f1f5f9;
+      background: #0b0d12; color: #f1f5f9;
       font-family: Arial, Helvetica, sans-serif;
-      overflow: hidden;
-      height: 100vh;
-      display: flex;
-      user-select: none;
+      overflow: hidden; height: 100vh; display: flex; user-select: none;
     }
-
-    /* Barra lateral */
     .sidebar {
-      width: 90px;
-      background: linear-gradient(180deg, #11141c 0%, #0b0d12 100%);
-      border-right: 1px solid rgba(255, 255, 255, 0.06);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 32px 0;
-      gap: 28px;
-      z-index: 10;
+      width: 90px; background: linear-gradient(180deg, #11141c, #0b0d12);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      display: flex; flex-direction: column; align-items: center;
+      padding: 32px 0; gap: 22px; z-index: 10;
     }
     .brand-icon {
-      width: 46px;
-      height: 46px;
-      background: #53fc18;
-      color: #000;
-      font-weight: 900;
-      font-size: 26px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 16px;
-      box-shadow: 0 4px 20px rgba(83, 252, 24, 0.25);
+      width: 46px; height: 46px; background: #53fc18; color: #000;
+      font-weight: 900; font-size: 26px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px; box-shadow: 0 4px 20px rgba(83,252,24,0.25);
     }
     .nav-item {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #94a3b8;
-      cursor: pointer;
+      width: 52px; height: 52px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #94a3b8; cursor: pointer; border: 3px solid transparent; font-size: 22px;
     }
     .nav-item svg { width: 24px; height: 24px; fill: currentColor; }
+    .nav-item:hover, .nav-item.focused { border-color: #fff; color: #fff; background: #1e2433; }
 
-    /* Área principal */
-    .main-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      overflow: hidden;
-    }
+    .main-content { flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
 
-    /* Hero Banner superior */
     .hero {
-      height: 44%;
-      padding: 36px 56px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      position: relative;
-      background: radial-gradient(circle at 80% 20%, rgba(83, 252, 24, 0.12), transparent 60%),
-                  linear-gradient(180deg, #131722 0%, #0b0d12 100%);
+      height: 44%; padding: 36px 56px; display: flex; flex-direction: column;
+      justify-content: flex-end; position: relative;
+      background: radial-gradient(circle at 80% 20%, rgba(83,252,24,0.12), transparent 60%),
+                  linear-gradient(180deg, #131722, #0b0d12);
     }
     .hero-bg {
-      position: absolute;
-      inset: 0;
-      background-size: cover;
-      background-position: center;
-      opacity: 0.28;
-      mask-image: linear-gradient(to left, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 85%);
-      -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 85%);
-      pointer-events: none;
+      position: absolute; inset: 0; background-size: cover; background-position: center;
+      opacity: 0.28; pointer-events: none;
+      -webkit-mask-image: linear-gradient(to left, #000 20%, transparent 85%);
+      mask-image: linear-gradient(to left, #000 20%, transparent 85%);
     }
     .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      color: #94a3b8;
-      margin-bottom: 10px;
-      z-index: 2;
+      display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700;
+      letter-spacing: 1.2px; text-transform: uppercase; color: #94a3b8; margin-bottom: 10px; z-index: 2;
     }
     .hero-badge.live { color: #53fc18; }
-    .dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: #64748b;
-    }
-    .hero-badge.live .dot {
-      background: #53fc18;
-      box-shadow: 0 0 10px #53fc18;
-    }
-    .hero-title {
-      font-size: 42px;
-      font-weight: 700;
-      margin-bottom: 10px;
-      z-index: 2;
-      max-width: 65%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .hero-sub {
-      font-size: 20px;
-      color: #cbd5e1;
-      z-index: 2;
-      max-width: 60%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+    .dot { width: 9px; height: 9px; border-radius: 50%; background: #64748b; }
+    .hero-badge.live .dot { background: #53fc18; box-shadow: 0 0 10px #53fc18; }
+    .hero-title, .hero-sub { z-index: 2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .hero-title { font-size: 42px; font-weight: 700; margin-bottom: 10px; max-width: 65%; }
+    .hero-sub { font-size: 20px; color: #cbd5e1; max-width: 60%; }
 
-    /* Buscador + Desplegable */
-    .search-wrapper {
-      position: absolute;
-      top: 28px;
-      right: 56px;
-      z-index: 50;
-      width: 420px;
-    }
-    .search-bar {
-      display: flex;
-      gap: 10px;
-    }
+    .search-wrapper { position: absolute; top: 28px; right: 56px; z-index: 50; width: 420px; }
+    .search-bar { display: flex; gap: 10px; }
     .search-bar input {
-      flex: 1;
-      background: rgba(22, 26, 36, 0.95);
-      border: 2px solid rgba(255, 255, 255, 0.18);
-      border-radius: 999px;
-      padding: 12px 22px;
-      color: #fff;
-      font-size: 18px;
-      outline: none;
+      flex: 1; background: rgba(22,26,36,0.95); border: 2px solid rgba(255,255,255,0.18);
+      border-radius: 999px; padding: 12px 22px; color: #fff; font-size: 18px; outline: none;
     }
     .search-bar button {
-      background: #53fc18;
-      border: 2px solid transparent;
-      border-radius: 999px;
-      padding: 12px 24px;
-      color: #000;
-      font-size: 18px;
-      font-weight: 800;
-      outline: none;
-      cursor: pointer;
+      background: #53fc18; border: 2px solid transparent; border-radius: 999px;
+      padding: 12px 24px; color: #000; font-size: 18px; font-weight: 800; outline: none; cursor: pointer;
     }
+    .search-bar input:hover, .search-bar input.focused,
+    .search-bar button:hover, .search-bar button.focused { border-color: #fff !important; transform: scale(1.03); }
 
     .suggestions-box {
-      margin-top: 10px;
-      background: #181d29;
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.9);
-      display: none;
+      margin-top: 10px; background: #181d29; border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 16px; overflow: hidden; box-shadow: 0 20px 45px rgba(0,0,0,0.9); display: none;
     }
     .suggestions-box.visible { display: block; }
     .suggestion-item {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 12px 18px;
-      border-left: 4px solid transparent;
-      cursor: pointer;
+      display: flex; align-items: center; gap: 14px; padding: 12px 18px;
+      border-left: 4px solid transparent; cursor: pointer;
     }
-    .suggestion-item:hover, .suggestion-item.focused {
-      background: #262e40 !important;
-      border-left-color: #53fc18 !important;
-    }
+    .suggestion-item:hover, .suggestion-item.focused { background: #262e40; border-left-color: #53fc18; }
     .sug-avatar {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: #2b3447;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      color: #53fc18;
-      overflow: hidden;
-      flex-shrink: 0;
+      width: 38px; height: 38px; border-radius: 50%; background: #2b3447;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; color: #53fc18; overflow: hidden; flex-shrink: 0;
     }
     .sug-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .sug-info { flex: 1; overflow: hidden; }
-    .sug-name {
-      font-size: 17px;
-      font-weight: 700;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .sug-live-tag {
-      background: #e11d48;
-      color: #fff;
-      font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-weight: 800;
-    }
-    .sug-sub {
-      font-size: 13px;
-      color: #94a3b8;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+    .sug-name { font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .sug-live-tag { background: #e11d48; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 800; }
+    .sug-sub { font-size: 13px; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    /* Grilla de tarjetas */
     .rows-container {
-      flex: 1;
-      padding: 16px 56px 40px 56px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      flex: 1; padding: 16px 56px 40px; display: flex; flex-direction: column; justify-content: center;
     }
     .row-title {
-      font-size: 22px;
-      font-weight: 500;
-      color: #e2e8f0;
-      margin-bottom: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      font-size: 22px; font-weight: 500; color: #e2e8f0; margin-bottom: 20px;
+      display: flex; justify-content: space-between; align-items: center;
     }
-    #status-msg {
-      font-size: 16px;
-      color: #94a3b8;
-      font-weight: 400;
-    }
-    .cards-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 26px;
-    }
+    #status-msg { font-size: 16px; color: #94a3b8; font-weight: 400; }
+    .cards-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
     .tv-card {
-      background: #161a24;
-      border-radius: 16px;
-      overflow: hidden;
-      border: 3px solid transparent;
-      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      cursor: pointer;
+      background: #161a24; border-radius: 16px; overflow: hidden; border: 3px solid transparent;
+      transition: transform .2s, border-color .2s, box-shadow .2s;
+      position: relative; display: flex; flex-direction: column; cursor: pointer;
+    }
+    .tv-card:hover, .tv-card.focused {
+      transform: scale(1.05); border-color: #fff;
+      box-shadow: 0 14px 34px rgba(0,0,0,0.75); z-index: 20;
     }
     .card-thumb {
-      height: 135px;
-      background: #1e2433;
-      background-size: cover;
-      background-position: center;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      height: 135px; background: #1e2433 center/cover; position: relative;
+      display: flex; align-items: center; justify-content: center;
     }
     .card-avatar {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: #272f42;
-      border: 2px solid rgba(255,255,255,0.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 26px;
-      font-weight: 800;
-      color: #53fc18;
-      text-transform: uppercase;
-      overflow: hidden;
+      width: 64px; height: 64px; border-radius: 50%; background: #272f42;
+      border: 2px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center;
+      font-size: 26px; font-weight: 800; color: #53fc18; text-transform: uppercase; overflow: hidden;
     }
     .card-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .live-pill {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      background: #e11d48;
-      color: #fff;
-      font-size: 12px;
-      font-weight: 800;
-      padding: 4px 10px;
-      border-radius: 6px;
-      letter-spacing: 0.8px;
-      display: none;
+      position: absolute; top: 12px; left: 12px; background: #e11d48; font-size: 12px; font-weight: 800;
+      padding: 4px 10px; border-radius: 6px; letter-spacing: .8px; display: none;
     }
     .tv-card.is-live .live-pill { display: block; }
-    .card-info {
-      padding: 14px 18px;
-      background: #161a24;
-    }
-    .card-name {
-      font-size: 20px;
-      font-weight: 700;
-      color: #f8fafc;
-      margin-bottom: 4px;
-    }
-    .card-meta {
-      font-size: 14px;
-      color: #94a3b8;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+    .card-info { padding: 14px 18px; }
+    .card-name { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .card-meta { font-size: 14px; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    /* Foco por flechas O por puntero */
-    .tv-card:hover, .tv-card.focused {
-      transform: scale(1.05);
-      border-color: #ffffff !important;
-      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.75), 0 0 0 2px rgba(255, 255, 255, 0.3);
-      z-index: 20;
-    }
-    .search-bar input:hover, .search-bar input.focused,
-    .search-bar button:hover, .search-bar button.focused {
-      border-color: #ffffff !important;
-      transform: scale(1.03);
-    }
-
-    /* Reproductor pantalla completa con botón táctil/puntero */
-    #player-container {
-      position: fixed;
-      inset: 0;
-      background: #000;
-      display: none;
-      z-index: 100;
-    }
+    #player-container { position: fixed; inset: 0; background: #000; display: none; z-index: 100; }
     video { width: 100%; height: 100%; object-fit: contain; }
     #player-overlay {
-      position: absolute;
-      bottom: 45px;
-      left: 55px;
-      right: 55px;
-      background: linear-gradient(90deg, rgba(11,13,18,0.94) 0%, rgba(11,13,18,0.75) 100%);
-      padding: 20px 28px;
-      border-radius: 16px;
-      border-left: 5px solid #53fc18;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: opacity 0.4s ease;
+      position: absolute; bottom: 45px; left: 55px; right: 55px;
+      background: linear-gradient(90deg, rgba(11,13,18,.94), rgba(11,13,18,.75));
+      padding: 20px 28px; border-radius: 16px; border-left: 5px solid #53fc18;
+      display: flex; justify-content: space-between; align-items: center; gap: 20px;
+      transition: opacity .4s;
     }
     .overlay-title { font-size: 24px; font-weight: 700; }
+    .overlay-hint { font-size: 16px; color: #fbbf24; margin-top: 6px; }
     #back-to-menu-btn {
-      background: #e11d48;
-      color: #fff;
-      border: 2px solid #fff;
-      border-radius: 10px;
-      padding: 12px 24px;
-      font-size: 18px;
-      font-weight: 800;
-      cursor: pointer;
+      background: #e11d48; color: #fff; border: 2px solid #fff; border-radius: 10px;
+      padding: 12px 24px; font-size: 18px; font-weight: 800; cursor: pointer; flex-shrink: 0;
     }
+    #player-spinner {
+      position: absolute; top: 50%; left: 50%; width: 64px; height: 64px; margin: -32px;
+      border: 6px solid rgba(255,255,255,.2); border-top-color: #53fc18; border-radius: 50%;
+      animation: spin 1s linear infinite; display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #debug-panel {
+      position: fixed; left: 100px; right: 10px; bottom: 10px; max-height: 40vh; overflow: auto;
+      background: rgba(0,0,0,.92); border: 1px solid #53fc18; border-radius: 10px;
+      padding: 12px; font: 13px/1.4 monospace; color: #a3e635; z-index: 200; display: none;
+    }
+    #debug-panel.visible { display: block; }
+    #debug-panel .err { color: #f87171; }
   </style>
 </head>
 <body>
@@ -375,13 +166,14 @@
     <div class="nav-item" id="refresh-btn" title="Actualizar estado">
       <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
     </div>
+    <div class="nav-item" id="debug-btn" title="Diagnóstico">🐞</div>
   </aside>
 
   <main class="main-content">
     <div class="search-wrapper">
       <div class="search-bar">
-        <input type="text" id="channel-input" class="focusable" placeholder="Buscar (ej: spr)..." autocomplete="off" />
-        <button id="play-btn" class="focusable">Ver</button>
+        <input type="text" id="channel-input" placeholder="Buscar canal..." autocomplete="off" />
+        <button id="play-btn">Ver</button>
       </div>
       <div class="suggestions-box" id="suggestions-box"></div>
     </div>
@@ -398,160 +190,221 @@
         <span>Canales Seguidos</span>
         <span id="status-msg">Actualizando estado...</span>
       </div>
-      <div class="cards-row" id="channel-grid">
-        <div class="tv-card focusable" data-channel="unicornio">
-          <div class="card-thumb"><span class="live-pill">EN VIVO</span><div class="card-avatar">U</div></div>
-          <div class="card-info"><div class="card-name">unicornio</div><div class="card-meta">Cargando...</div></div>
-        </div>
-        <div class="tv-card focusable" data-channel="agustinunaplay8">
-          <div class="card-thumb"><span class="live-pill">EN VIVO</span><div class="card-avatar">A</div></div>
-          <div class="card-info"><div class="card-name">agustinunaplay8</div><div class="card-meta">Cargando...</div></div>
-        </div>
-        <div class="tv-card focusable" data-channel="santutu">
-          <div class="card-thumb"><span class="live-pill">EN VIVO</span><div class="card-avatar">S</div></div>
-          <div class="card-info"><div class="card-name">santutu</div><div class="card-meta">Cargando...</div></div>
-        </div>
-        <div class="tv-card focusable" data-channel="straka">
-          <div class="card-thumb"><span class="live-pill">EN VIVO</span><div class="card-avatar">S</div></div>
-          <div class="card-info"><div class="card-name">straka</div><div class="card-meta">Cargando...</div></div>
-        </div>
-        <div class="tv-card focusable" data-channel="baldu">
-          <div class="card-thumb"><span class="live-pill">EN VIVO</span><div class="card-avatar">B</div></div>
-          <div class="card-info"><div class="card-name">baldu</div><div class="card-meta">Cargando...</div></div>
-        </div>
-        <div class="tv-card focusable" data-channel="spreen">
-          <div class="card-thumb"><span class="live-pill">EN VIVO</span><div class="card-avatar">S</div></div>
-          <div class="card-info"><div class="card-name">spreen</div><div class="card-meta">Cargando...</div></div>
-        </div>
-      </div>
+      <div class="cards-row" id="channel-grid"></div>
     </section>
   </main>
 
   <div id="player-container">
-    <video id="video" autoplay playsinline></video>
+    <video id="video" playsinline></video>
+    <div id="player-spinner"></div>
     <div id="player-overlay">
-      <div class="overlay-title" id="overlay-title">Cargando stream...</div>
+      <div>
+        <div class="overlay-title" id="overlay-title">Cargando stream...</div>
+        <div class="overlay-hint" id="overlay-hint"></div>
+      </div>
       <button id="back-to-menu-btn">← Volver al menú</button>
     </div>
   </div>
 
+  <div id="debug-panel"></div>
+
   <script>
+    // ================== CONFIGURACIÓN ==================
+    // Tus canales (máximo recomendado: 6 para que entren en pantalla)
+    const CHANNELS = ['unicornio', 'agustinunaplay8', 'santutu', 'straka', 'baldu', 'spreen'];
+
+    // OPCIONAL pero MUY recomendado: URL de tu Cloudflare Worker (ver instrucciones).
+    // Ejemplo: 'https://kick-proxy.tuusuario.workers.dev'
+    const WORKER_URL = '';
+    // ===================================================
+
+    const PROXIES = [
+      ...(WORKER_URL ? [{ name: 'worker', build: u => `${WORKER_URL}/?url=${encodeURIComponent(u)}` }] : []),
+      { name: 'directo',   build: u => u },
+      { name: 'corsproxy', build: u => `https://corsproxy.io/?url=${encodeURIComponent(u)}` },
+      { name: 'allorigins',build: u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}` },
+      { name: 'codetabs',  build: u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}` }
+    ];
+    let preferredProxy = parseInt(localStorage.getItem('kickProxy') || '0', 10);
+    if (!(preferredProxy >= 0 && preferredProxy < PROXIES.length)) preferredProxy = 0;
+
     const channelDataCache = {};
     let currentFocusEl = null;
     let isPlaying = false;
     let hls = null;
     let overlayTimeout = null;
     let searchTimeout = null;
+    let searchToken = 0;
+    let lastFocusBeforePlay = null;
+    let mediaRecoveries = 0;
 
-    const inputEl = document.getElementById('channel-input');
-    const playBtnEl = document.getElementById('play-btn');
-    const refreshBtnEl = document.getElementById('refresh-btn');
-    const suggestionsBox = document.getElementById('suggestions-box');
-    const cards = Array.from(document.querySelectorAll('.tv-card'));
+    const $ = id => document.getElementById(id);
+    const inputEl = $('channel-input'), playBtnEl = $('play-btn');
+    const refreshBtnEl = $('refresh-btn'), debugBtnEl = $('debug-btn'), debugPanel = $('debug-panel');
+    const suggestionsBox = $('suggestions-box'), grid = $('channel-grid'), statusMsg = $('status-msg');
+    const heroBg = $('hero-bg'), heroBadge = $('hero-badge'), heroStatus = $('hero-status');
+    const heroTitle = $('hero-title'), heroSub = $('hero-sub');
+    const playerContainer = $('player-container'), video = $('video'), spinner = $('player-spinner');
+    const overlay = $('player-overlay'), overlayTitle = $('overlay-title'), overlayHint = $('overlay-hint');
+    const backBtn = $('back-to-menu-btn');
 
-    const statusMsg = document.getElementById('status-msg');
-    const heroBg = document.getElementById('hero-bg');
-    const heroBadge = document.getElementById('hero-badge');
-    const heroStatus = document.getElementById('hero-status');
-    const heroTitle = document.getElementById('hero-title');
-    const heroSub = document.getElementById('hero-sub');
+    // ---------- Utilidades ----------
+    const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-    const playerContainer = document.getElementById('player-container');
-    const video = document.getElementById('video');
-    const overlay = document.getElementById('player-overlay');
-    const overlayTitle = document.getElementById('overlay-title');
-    const backBtn = document.getElementById('back-to-menu-btn');
+    function log(msg, isError) {
+      const line = document.createElement('div');
+      if (isError) line.className = 'err';
+      line.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+      debugPanel.appendChild(line);
+      while (debugPanel.children.length > 80) debugPanel.removeChild(debugPanel.firstChild);
+      debugPanel.scrollTop = debugPanel.scrollHeight;
+    }
+    window.addEventListener('error', e => log('JS: ' + e.message, true));
 
-    async function fetchWithProxyFallback(url) {
-      try {
-        const res = await fetch(url);
-        if (res.ok) return await res.json();
-      } catch (e) {}
-      const proxyRes = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`);
-      if (!proxyRes.ok) throw new Error('Error de red');
-      return await proxyRes.json();
+    function timedFetch(url, ms) {
+      const ctrl = window.AbortController ? new AbortController() : null;
+      const timer = setTimeout(() => ctrl && ctrl.abort(), ms);
+      return fetch(url, ctrl ? { signal: ctrl.signal } : {}).finally(() => clearTimeout(timer));
     }
 
-    // Eventos de puntero / clic para navegador de Titan OS
-    cards.forEach(card => {
+    // Prueba primero el proxy que funcionó la última vez, después el resto
+    async function fetchJSON(url) {
+      const order = [preferredProxy, ...PROXIES.map((_, i) => i).filter(i => i !== preferredProxy)];
+      for (const i of order) {
+        const p = PROXIES[i];
+        try {
+          const res = await timedFetch(p.build(url), 9000);
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const data = JSON.parse(await res.text());
+          if (i !== preferredProxy) {
+            preferredProxy = i;
+            localStorage.setItem('kickProxy', String(i));
+            log(`Usando proxy: ${p.name}`);
+          }
+          return data;
+        } catch (e) {
+          log(`Falló ${p.name}: ${e.message || e}`, true);
+        }
+      }
+      throw new Error('Ningún proxy pudo conectar con Kick');
+    }
+
+    // ---------- Tarjetas ----------
+    const cards = CHANNELS.map(slug => {
+      const card = document.createElement('div');
+      card.className = 'tv-card';
+      card.dataset.channel = slug;
+      card.innerHTML = `
+        <div class="card-thumb"><span class="live-pill">EN VIVO</span><div class="card-avatar">${esc(slug[0])}</div></div>
+        <div class="card-info"><div class="card-name">${esc(slug)}</div><div class="card-meta">Cargando...</div></div>`;
       card.addEventListener('mouseenter', () => setFocus(card));
-      card.addEventListener('click', () => loadChannel(card.dataset.channel));
+      card.addEventListener('click', () => loadChannel(slug));
+      grid.appendChild(card);
+      return card;
     });
 
+    async function hydrateCard(card) {
+      const slug = card.dataset.channel;
+      const thumbEl = card.querySelector('.card-thumb');
+      const avatarEl = card.querySelector('.card-avatar');
+      const metaEl = card.querySelector('.card-meta');
+      try {
+        const data = await fetchJSON(`https://kick.com/api/v2/channels/${slug}`);
+        channelDataCache[slug] = data;
+        avatarEl.style.display = '';
+        thumbEl.style.backgroundImage = '';
+
+        if (data.user && data.user.profile_pic) {
+          avatarEl.innerHTML = `<img src="${esc(data.user.profile_pic)}" alt="">`;
+        }
+        if (data.livestream) {
+          card.classList.add('is-live');
+          const v = (data.livestream.viewer_count || 0).toLocaleString();
+          metaEl.textContent = `${v} espectadores • ${data.livestream.session_title || 'En vivo'}`;
+          const t = data.livestream.thumbnail && data.livestream.thumbnail.url;
+          if (t) { thumbEl.style.backgroundImage = `url("${t}")`; avatarEl.style.display = 'none'; }
+        } else {
+          card.classList.remove('is-live');
+          metaEl.textContent = 'Desconectado';
+          const b = data.banner_image && data.banner_image.url;
+          if (b) thumbEl.style.backgroundImage =
+            `linear-gradient(rgba(22,26,36,.65), rgba(22,26,36,.85)), url("${b}")`;
+        }
+      } catch (err) {
+        metaEl.textContent = 'Sin conexión';
+      }
+    }
+
+    async function hydrateCards() {
+      statusMsg.textContent = 'Actualizando estado...';
+      // Primero una sola tarjeta para detectar qué proxy funciona, después el resto en paralelo
+      await hydrateCard(cards[0]);
+      await Promise.all(cards.slice(1).map(hydrateCard));
+      const ok = cards.some(c => channelDataCache[c.dataset.channel]);
+      statusMsg.textContent = ok ? 'Listo' : '⚠ No se pudo conectar con Kick (ver 🐞)';
+      updateHeroFromFocus();
+    }
+
+    // ---------- Buscador ----------
+    inputEl.addEventListener('focus', () => { if (currentFocusEl !== inputEl) setFocus(inputEl); });
+    inputEl.addEventListener('mouseenter', () => setFocus(inputEl));
+    playBtnEl.addEventListener('mouseenter', () => setFocus(playBtnEl));
     playBtnEl.addEventListener('click', () => loadChannel(inputEl.value));
-    refreshBtnEl.addEventListener('click', () => hydrateCards());
-    backBtn.addEventListener('click', () => stopVideo());
-    playerContainer.addEventListener('mousemove', () => showOverlay(overlayTitle.textContent));
-    playerContainer.addEventListener('click', (e) => {
-      if (e.target !== backBtn) showOverlay(overlayTitle.textContent);
-    });
 
     inputEl.addEventListener('input', () => {
       clearTimeout(searchTimeout);
-      const query = inputEl.value.trim();
-
-      if (query.length < 2) {
-        closeSuggestions();
-        return;
-      }
+      const query = inputEl.value.trim().toLowerCase();
+      if (query.length < 2) { closeSuggestions(); return; }
 
       searchTimeout = setTimeout(async () => {
+        const token = ++searchToken;
+        let results = [];
         try {
-          const searchUrl = `https://kick.com/api/search?searched_word=${encodeURIComponent(query)}`;
-          const data = await fetchWithProxyFallback(searchUrl);
-          const channels = (data.channels || []).slice(0, 5);
-          renderSuggestions(channels);
-        } catch (err) {
-          const localMatches = Object.keys(channelDataCache)
-            .filter(slug => slug.includes(query.toLowerCase()))
-            .map(slug => ({
-              slug,
-              user: channelDataCache[slug].user,
-              is_live: !!channelDataCache[slug].livestream,
-              livestream: channelDataCache[slug].livestream
-            }));
-          renderSuggestions(localMatches);
+          const data = await fetchJSON(`https://kick.com/api/search?searched_word=${encodeURIComponent(query)}`);
+          results = (data.channels || []).slice(0, 5);
+        } catch (e) {
+          results = Object.keys(channelDataCache).filter(s => s.includes(query)).map(slug => ({
+            slug, user: channelDataCache[slug].user, livestream: channelDataCache[slug].livestream
+          }));
         }
-      }, 280);
+        if (token !== searchToken) return; // llegó una búsqueda más nueva
+        // Siempre ofrecer abrir el texto escrito tal cual
+        if (!results.some(r => (r.slug || '').toLowerCase() === query)) {
+          results.push({ slug: query, _manual: true });
+        }
+        renderSuggestions(results);
+      }, 300);
     });
 
     function renderSuggestions(channels) {
       suggestionsBox.innerHTML = '';
-      if (!channels || channels.length === 0) {
-        closeSuggestions();
-        return;
-      }
-
       channels.forEach(ch => {
         const slug = ch.slug || (ch.user && ch.user.username) || '';
         if (!slug) return;
-
-        const isLive = ch.is_live || !!ch.livestream;
+        const isLive = !!(ch.is_live || ch.livestream);
         const pic = (ch.user && ch.user.profile_pic) || ch.profile_pic || '';
-        const title = (ch.livestream && ch.livestream.session_title) || (isLive ? 'Transmitiendo en vivo' : 'Canal de Kick');
+        const title = ch._manual ? 'Abrir este canal'
+          : (ch.livestream && ch.livestream.session_title) || (isLive ? 'Transmitiendo en vivo' : 'Canal de Kick');
+
+        if (!ch._manual && !channelDataCache[slug]) {
+          channelDataCache[slug] = { user: ch.user, livestream: ch.livestream || (isLive ? {} : null), _partial: true };
+        }
 
         const item = document.createElement('div');
         item.className = 'suggestion-item';
         item.dataset.channel = slug;
         item.innerHTML = `
-          <div class="sug-avatar">${pic ? `<img src="${pic}" alt="">` : slug[0].toUpperCase()}</div>
+          <div class="sug-avatar">${pic ? `<img src="${esc(pic)}" alt="">` : esc(slug[0].toUpperCase())}</div>
           <div class="sug-info">
-            <div class="sug-name">
-              <span>${slug}</span>
-              ${isLive ? '<span class="sug-live-tag">EN VIVO</span>' : ''}
-            </div>
-            <div class="sug-sub">${title}</div>
-          </div>
-        `;
+            <div class="sug-name"><span>${esc(slug)}</span>${isLive ? '<span class="sug-live-tag">EN VIVO</span>' : ''}</div>
+            <div class="sug-sub">${esc(title)}</div>
+          </div>`;
         item.addEventListener('mouseenter', () => setFocus(item));
-        item.addEventListener('click', () => {
-          closeSuggestions();
-          loadChannel(slug);
-        });
+        item.addEventListener('click', () => loadChannel(slug));
         suggestionsBox.appendChild(item);
       });
-
-      suggestionsBox.classList.add('visible');
+      suggestionsBox.classList.toggle('visible', suggestionsBox.children.length > 0);
     }
 
     function closeSuggestions() {
@@ -559,184 +412,242 @@
       suggestionsBox.innerHTML = '';
     }
 
-    async function hydrateCards() {
-      statusMsg.textContent = 'Actualizando estado...';
-      for (const card of cards) {
-        const slug = card.dataset.channel;
-        try {
-          const data = await fetchWithProxyFallback(`https://kick.com/api/v2/channels/${slug}`);
-          channelDataCache[slug] = data;
-
-          const thumbEl = card.querySelector('.card-thumb');
-          const avatarEl = card.querySelector('.card-avatar');
-          const metaEl = card.querySelector('.card-meta');
-
-          if (data.user && data.user.profile_pic) {
-            avatarEl.innerHTML = `<img src="${data.user.profile_pic}" alt="${slug}">`;
-          }
-
-          if (data.livestream) {
-            card.classList.add('is-live');
-            const viewers = data.livestream.viewer_count || 0;
-            metaEl.textContent = `${viewers.toLocaleString()} espectadores • ${data.livestream.session_title || 'En vivo'}`;
-            if (data.livestream.thumbnail && data.livestream.thumbnail.url) {
-              thumbEl.style.backgroundImage = `url('${data.livestream.thumbnail.url}')`;
-              avatarEl.style.display = 'none';
-            }
-          } else {
-            card.classList.remove('is-live');
-            metaEl.textContent = 'Desconectado';
-            if (data.banner_image && data.banner_image.url) {
-              thumbEl.style.backgroundImage = `linear-gradient(rgba(22,26,36,0.65), rgba(22,26,36,0.85)), url('${data.banner_image.url}')`;
-            }
-          }
-        } catch (err) {
-          card.querySelector('.card-meta').textContent = 'Sin conexión';
-        }
-      }
-      statusMsg.textContent = 'Listo';
+    // ---------- Foco y hero ----------
+    function setFocus(el) {
+      if (!el) return;
+      document.querySelectorAll('.focused').forEach(n => n.classList.remove('focused'));
+      currentFocusEl = el;
+      el.classList.add('focused');
+      if (el === inputEl) { if (document.activeElement !== inputEl) inputEl.focus(); }
+      else if (document.activeElement === inputEl) inputEl.blur();
       updateHeroFromFocus();
     }
 
     function updateHeroFromFocus() {
       if (!currentFocusEl || !currentFocusEl.dataset.channel) return;
-
       const slug = currentFocusEl.dataset.channel;
       const data = channelDataCache[slug];
-
       heroTitle.textContent = slug;
-      if (data && data.livestream) {
+
+      if (!data) {
+        heroBadge.classList.remove('live');
+        heroStatus.textContent = 'KICK TV';
+        heroSub.textContent = 'Presioná OK para abrir el canal';
+        heroBg.style.backgroundImage = 'none';
+      } else if (data.livestream) {
         heroBadge.classList.add('live');
-        heroStatus.textContent = `EN VIVO • ${(data.livestream.viewer_count || 0).toLocaleString()} ESPECTADORES`;
+        heroStatus.textContent = data.livestream.viewer_count != null
+          ? `EN VIVO • ${data.livestream.viewer_count.toLocaleString()} ESPECTADORES` : 'EN VIVO';
         heroSub.textContent = data.livestream.session_title || 'Transmisión en directo';
-        if (data.livestream.thumbnail && data.livestream.thumbnail.url) {
-          heroBg.style.backgroundImage = `url('${data.livestream.thumbnail.url}')`;
-        }
+        const t = data.livestream.thumbnail && data.livestream.thumbnail.url;
+        heroBg.style.backgroundImage = t ? `url("${t}")` : 'none';
       } else {
         heroBadge.classList.remove('live');
         heroStatus.textContent = 'OFFLINE';
         heroSub.textContent = 'Este canal no está transmitiendo en este momento';
-        heroBg.style.backgroundImage = (data && data.banner_image && data.banner_image.url)
-          ? `url('${data.banner_image.url}')`
-          : 'none';
+        const b = data.banner_image && data.banner_image.url;
+        heroBg.style.backgroundImage = b ? `url("${b}")` : 'none';
       }
     }
 
-    function setFocus(el) {
-      if (!el) return;
-      document.querySelectorAll('.focused').forEach(node => node.classList.remove('focused'));
-      currentFocusEl = el;
-      currentFocusEl.classList.add('focused');
-      updateHeroFromFocus();
-    }
-
+    // ---------- Reproducción ----------
     async function loadChannel(channelName) {
-      const cleanName = channelName.trim().toLowerCase();
+      const cleanName = String(channelName || '').trim().toLowerCase();
       if (!cleanName) return;
-
       closeSuggestions();
       statusMsg.textContent = `Conectando con ${cleanName}...`;
+      log(`Abriendo canal: ${cleanName}`);
       try {
-        const data = await fetchWithProxyFallback(`https://kick.com/api/v2/channels/${cleanName}`);
+        const data = await fetchJSON(`https://kick.com/api/v2/channels/${cleanName}`);
         channelDataCache[cleanName] = data;
-
         if (!data.livestream || !data.playback_url) {
           statusMsg.textContent = `${cleanName} no está en vivo ahora`;
+          log(`${cleanName}: sin livestream o sin playback_url`);
           updateHeroFromFocus();
           return;
         }
-
+        log('Stream: ' + data.playback_url);
         startVideo(data.playback_url, cleanName, data.livestream.session_title);
       } catch (err) {
-        statusMsg.textContent = `No se pudo cargar "${cleanName}"`;
+        statusMsg.textContent = `No se pudo cargar "${cleanName}" (ver 🐞)`;
+        log(err.message, true);
       }
+    }
+
+    function tryPlay() {
+      video.muted = false;
+      const p = video.play();
+      if (!p || !p.catch) return;
+      p.catch(err => {
+        log('Autoplay con sonido bloqueado: ' + err.name);
+        video.muted = true;
+        video.play().then(() => {
+          overlayHint.textContent = '🔇 Presioná OK para activar el sonido';
+          showOverlay(overlayTitle.textContent, true);
+        }).catch(e => {
+          log('No se pudo reproducir: ' + e.message, true);
+          overlayHint.textContent = '▶ Presioná OK para reproducir';
+          showOverlay(overlayTitle.textContent, true);
+        });
+      });
     }
 
     function startVideo(m3u8Url, channelName, title) {
       isPlaying = true;
+      mediaRecoveries = 0;
+      lastFocusBeforePlay = currentFocusEl;
+      if (document.activeElement === inputEl) inputEl.blur();
       playerContainer.style.display = 'block';
+      spinner.style.display = 'block';
+      overlayHint.textContent = '';
       showOverlay(`${channelName.toUpperCase()} — ${title || 'En vivo'}`);
 
-      if (Hls.isSupported()) {
+      if (window.Hls && Hls.isSupported()) {
         if (hls) hls.destroy();
-        hls = new Hls({ maxBufferLength: 30, maxMaxBufferLength: 60 });
+        hls = new Hls({ maxBufferLength: 30, maxMaxBufferLength: 60, liveSyncDurationCount: 3, enableWorker: true });
         hls.loadSource(m3u8Url);
         hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(() => {}));
+        hls.on(Hls.Events.MANIFEST_PARSED, () => { log('Manifest OK'); tryPlay(); });
+        hls.on(Hls.Events.ERROR, (_, d) => {
+          log(`HLS ${d.fatal ? 'FATAL' : ''} ${d.type} / ${d.details}`, d.fatal);
+          if (!d.fatal) return;
+          if (d.type === Hls.ErrorTypes.NETWORK_ERROR) {
+            setTimeout(() => hls && hls.startLoad(), 1500);
+          } else if (d.type === Hls.ErrorTypes.MEDIA_ERROR && mediaRecoveries < 3) {
+            mediaRecoveries++;
+            hls.recoverMediaError();
+          } else {
+            stopVideo();
+            statusMsg.textContent = 'Error de reproducción (ver 🐞)';
+          }
+        });
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        log('Usando HLS nativo');
         video.src = m3u8Url;
-        video.play().catch(() => {});
+        tryPlay();
+      } else {
+        log('Este navegador no soporta HLS', true);
+        stopVideo();
+        statusMsg.textContent = 'Este navegador no puede reproducir streams HLS';
       }
     }
+
+    video.addEventListener('playing', () => { spinner.style.display = 'none'; });
+    video.addEventListener('waiting', () => { spinner.style.display = 'block'; });
 
     function stopVideo() {
       isPlaying = false;
       if (hls) { hls.destroy(); hls = null; }
       video.pause();
-      video.src = '';
+      video.removeAttribute('src');
+      video.load();
+      spinner.style.display = 'none';
       playerContainer.style.display = 'none';
       statusMsg.textContent = 'Listo';
+      setFocus(lastFocusBeforePlay && lastFocusBeforePlay.isConnected ? lastFocusBeforePlay : cards[0]);
     }
 
-    function showOverlay(text) {
-      overlayTitle.textContent = text;
+    function showOverlay(text, sticky) {
+      if (text) overlayTitle.textContent = text;
       overlay.style.opacity = '1';
       clearTimeout(overlayTimeout);
-      overlayTimeout = setTimeout(() => { overlay.style.opacity = '0'; }, 5000);
+      if (!sticky) overlayTimeout = setTimeout(() => { overlay.style.opacity = '0'; }, 5000);
     }
 
-    // Mantiene compatibilidad con flechas si el navegador las envía
-    document.addEventListener('keydown', (e) => {
+    function playerOk() {
+      if (video.paused || video.muted) {
+        video.muted = false;
+        video.play().catch(() => { video.muted = true; video.play().catch(() => {}); });
+        overlayHint.textContent = '';
+      }
+      showOverlay();
+    }
+
+    backBtn.addEventListener('click', e => { e.stopPropagation(); stopVideo(); });
+    playerContainer.addEventListener('mousemove', () => showOverlay());
+    playerContainer.addEventListener('click', e => { if (e.target !== backBtn) playerOk(); });
+
+    // ---------- Barra lateral ----------
+    refreshBtnEl.addEventListener('click', hydrateCards);
+    refreshBtnEl.addEventListener('mouseenter', () => setFocus(refreshBtnEl));
+    debugBtnEl.addEventListener('click', () => debugPanel.classList.toggle('visible'));
+    debugBtnEl.addEventListener('mouseenter', () => setFocus(debugBtnEl));
+
+    // ---------- Control remoto ----------
+    const BACK_KEYS = ['Escape', 'GoBack', 'BrowserBack', 'Back'];
+    const BACK_CODES = [27, 461, 10009, 166];
+
+    document.addEventListener('keydown', e => {
+      const isBack = BACK_KEYS.includes(e.key) || BACK_CODES.includes(e.keyCode) ||
+        (e.key === 'Backspace' && document.activeElement !== inputEl);
+
       if (isPlaying) {
-        if (e.key === 'Backspace' || e.key === 'Escape' || e.keyCode === 461 || e.keyCode === 10009) {
-          e.preventDefault();
-          stopVideo();
-        } else {
-          showOverlay(overlayTitle.textContent);
-        }
+        if (isBack) { e.preventDefault(); stopVideo(); }
+        else if (e.key === 'Enter') { e.preventDefault(); playerOk(); }
+        else showOverlay();
         return;
+      }
+
+      if (isBack && suggestionsBox.classList.contains('visible')) {
+        e.preventDefault(); closeSuggestions(); setFocus(inputEl); return;
       }
 
       const sugItems = Array.from(suggestionsBox.querySelectorAll('.suggestion-item'));
       const isSugOpen = suggestionsBox.classList.contains('visible') && sugItems.length > 0;
       const sugIndex = sugItems.indexOf(currentFocusEl);
       const cardIndex = cards.indexOf(currentFocusEl);
+      const navItems = [refreshBtnEl, debugBtnEl];
+      const navIndex = navItems.indexOf(currentFocusEl);
 
       switch (e.key) {
         case 'ArrowDown':
-          if (currentFocusEl === inputEl || currentFocusEl === playBtnEl) {
-            if (isSugOpen) { e.preventDefault(); setFocus(sugItems[0]); }
-            else setFocus(cards[0]);
-          } else if (sugIndex !== -1) {
-            e.preventDefault();
+          e.preventDefault();
+          if (currentFocusEl === inputEl || currentFocusEl === playBtnEl) setFocus(isSugOpen ? sugItems[0] : cards[0]);
+          else if (sugIndex !== -1) {
             if (sugIndex + 1 < sugItems.length) setFocus(sugItems[sugIndex + 1]);
             else { closeSuggestions(); setFocus(cards[0]); }
-          } else if (cardIndex !== -1 && cardIndex + 3 < cards.length) {
-            setFocus(cards[cardIndex + 3]);
           }
+          else if (navIndex !== -1 && navIndex + 1 < navItems.length) setFocus(navItems[navIndex + 1]);
+          else if (cardIndex !== -1 && cardIndex + 3 < cards.length) setFocus(cards[cardIndex + 3]);
           break;
         case 'ArrowUp':
-          if (sugIndex > 0) { e.preventDefault(); setFocus(sugItems[sugIndex - 1]); }
-          else if (sugIndex === 0) { e.preventDefault(); setFocus(inputEl); }
+          e.preventDefault();
+          if (sugIndex > 0) setFocus(sugItems[sugIndex - 1]);
+          else if (sugIndex === 0) setFocus(inputEl);
+          else if (navIndex > 0) setFocus(navItems[navIndex - 1]);
           else if (cardIndex >= 3) setFocus(cards[cardIndex - 3]);
-          else if (cardIndex >= 0 && cardIndex < 3) setFocus(inputEl);
+          else if (cardIndex >= 0) setFocus(inputEl);
           break;
         case 'ArrowRight':
-          if (currentFocusEl === inputEl) setFocus(playBtnEl);
-          else if (cardIndex !== -1 && cardIndex + 1 < cards.length) setFocus(cards[cardIndex + 1]);
+          if (currentFocusEl === inputEl) {
+            if (inputEl.selectionStart === inputEl.value.length) { e.preventDefault(); setFocus(playBtnEl); }
+          }
+          else if (navIndex !== -1) { e.preventDefault(); setFocus(cards[0]); }
+          else if (cardIndex !== -1 && (cardIndex + 1) % 3 !== 0 && cardIndex + 1 < cards.length) {
+            e.preventDefault(); setFocus(cards[cardIndex + 1]);
+          }
           break;
         case 'ArrowLeft':
+          if (currentFocusEl === inputEl) break; // mover cursor dentro del texto
+          e.preventDefault();
           if (currentFocusEl === playBtnEl) setFocus(inputEl);
+          else if (cardIndex !== -1 && cardIndex % 3 === 0) setFocus(refreshBtnEl);
           else if (cardIndex > 0) setFocus(cards[cardIndex - 1]);
           break;
         case 'Enter':
-          if (currentFocusEl === playBtnEl) loadChannel(inputEl.value);
-          else if (sugIndex !== -1) loadChannel(currentFocusEl.dataset.channel);
-          else if (cardIndex !== -1) loadChannel(currentFocusEl.dataset.channel);
+          e.preventDefault();
+          if (currentFocusEl === inputEl || currentFocusEl === playBtnEl) {
+            if (isSugOpen && currentFocusEl === inputEl) setFocus(sugItems[0]);
+            else loadChannel(inputEl.value);
+          }
+          else if (navIndex !== -1) currentFocusEl.click();
+          else if (currentFocusEl && currentFocusEl.dataset.channel) loadChannel(currentFocusEl.dataset.channel);
           break;
       }
     });
 
+    // ---------- Inicio ----------
+    log('App iniciada. HLS.js: ' + (window.Hls ? (Hls.isSupported() ? 'soportado' : 'NO soportado') : 'no cargó'));
     setFocus(cards[0]);
     hydrateCards();
   </script>
